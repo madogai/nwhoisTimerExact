@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
-namespace NwhoisTimerExact {
+namespace nwhois.plugin.NwhoisTimerExact {
 	public partial class MainForm : Form {
 		private NwhoisTimerExactData pluginData;
 

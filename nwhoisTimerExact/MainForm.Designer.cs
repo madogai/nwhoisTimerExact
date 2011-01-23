@@ -1,4 +1,4 @@
-﻿namespace NwhoisTimerExact {
+﻿namespace nwhois.plugin.NwhoisTimerExact {
 	partial class MainForm {
 		/// <summary>
 		/// Required designer variable.

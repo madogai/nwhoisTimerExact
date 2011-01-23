@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace NwhoisTimerExact.Properties {
+namespace nwhois.plugin.NwhoisTimerExact.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -1,4 +1,4 @@
-﻿namespace NwhoisTimerExact {
+﻿namespace nwhois.plugin.NwhoisTimerExact {
 	using System;
 	using System.Net;
 

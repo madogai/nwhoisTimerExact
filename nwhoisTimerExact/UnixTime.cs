@@ -1,4 +1,4 @@
-﻿namespace NwhoisTimerExact {
+﻿namespace nwhois.plugin.NwhoisTimerExact {
 	using System;
 
 	internal sealed class UnixTime {
