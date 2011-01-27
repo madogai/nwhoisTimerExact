@@ -69,38 +69,7 @@
 		}
 
 		public void Run() {
-			if (this.form != null) {
-				return;
-			}
-
-			var form = new MainForm(this.pluginData);
-			form.FormClosed += (sender, e) => {
-				DataManager.Save(this.Host.ApplicationDataFolder, NwhoisTimerExact.FileName, this.pluginData);
-				this.form = null;
-				// ここでデリゲートは分かりづらくなるので、できればしたくなかったのですが、他の綺麗な手段が思いつきませんでした。
-				if (this.onFormClosed != null) {
-					this.onFormClosed(null);
-				}
-			};
-			form.WatchStateChangeCheckBox.CheckedChanged += (sender, e) => {
-				this.enableAlert = form.WatchStateChangeCheckBox.Checked;
-			};
-			form.AddCurrentCommunityButton.Click += (sender, e) => {
-				if (String.IsNullOrEmpty(this.Host.CommunityId)) {
-					return;
-				}
-
-				if (String.IsNullOrEmpty(form.CommunityFilterTextBox.Text) == false) {
-					form.CommunityFilterTextBox.Text += "/";
-				}
-				form.CommunityFilterTextBox.Text += this.Host.CommunityId;
-			};
-			if (this.pluginData.AnytimeWatch) {
-				form.WatchStateChangeCheckBox.Checked = true;
-			}
-
-			form.Show((System.Windows.Forms.IWin32Window)this.Host.Win32WindowOwner);
-			this.form = form;
+			this.OpenForm();
 		}
 
 		#endregion
@@ -119,9 +88,6 @@
 				var alertMinute = (Int32)this.pluginData.CallAlertTime;
 				var alertTime = liveInfo.EndTime.AddMinutes(-1 * alertMinute);
 				var callAlertMillisec = (Int32)alertTime.Subtract(liveInfo.ServerTime).TotalMilliseconds;
-				Debug.WriteLine(liveInfo.EndTime);
-				Debug.WriteLine(liveInfo.ServerTime);
-				Debug.WriteLine(alertTime);
 				if (callAlertMillisec > 0) {
 					alertTimer.Change(callAlertMillisec, Timeout.Infinite);
 					Debug.WriteLine(String.Format("アラートを設定しました。{0} ミリ秒後", callAlertMillisec));
@@ -164,6 +130,41 @@
 			this.enableAlert = this.pluginData.AnytimeWatch;
 		}
 
+		private void OpenForm() {
+			if (this.form != null) {
+				return;
+			}
+
+			var form = new MainForm(this.pluginData);
+			form.FormClosed += (sender, e) => {
+				DataManager.Save(this.Host.ApplicationDataFolder, NwhoisTimerExact.FileName, this.pluginData);
+				this.form = null;
+				// ここでデリゲートは分かりづらくなるので、できればしたくなかったのですが、他の綺麗な手段が思いつきませんでした。
+				if (this.onFormClosed != null) {
+					this.onFormClosed(null);
+				}
+			};
+			form.WatchStateChangeCheckBox.CheckedChanged += (sender, e) => {
+				this.enableAlert = form.WatchStateChangeCheckBox.Checked;
+			};
+			form.AddCurrentCommunityButton.Click += (sender, e) => {
+				if (String.IsNullOrEmpty(this.Host.CommunityId)) {
+					return;
+				}
+
+				if (String.IsNullOrEmpty(form.CommunityFilterTextBox.Text) == false) {
+					form.CommunityFilterTextBox.Text += "/";
+				}
+				form.CommunityFilterTextBox.Text += this.Host.CommunityId;
+			};
+			if (this.pluginData.AnytimeWatch) {
+				form.WatchStateChangeCheckBox.Checked = true;
+			}
+
+			form.Show((System.Windows.Forms.IWin32Window)this.Host.Win32WindowOwner);
+			this.form = form;
+		}
+
 		private void OnAlert(Object sender, EventArgs e) {
 			if (this.enableAlert == false) {
 				Debug.WriteLine("監視しない設定になっています。");
@@ -192,14 +193,13 @@
 
 #if DEBUG
 			Debug.WriteLine(String.Format(@"コマンド: {0}, メッセージ: {1}", command, message));
-#endif
-
+#else
 			if (this.pluginData.AsOwner && this.Host.IsCaster) {
 				this.Host.PostOwnerMessage(message, command);
 			} else {
 				this.Host.PostMessage(message, command);
 			}
-
+#endif
 
 			Debug.WriteLine("アラートを投稿しました。");
 		}

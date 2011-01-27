@@ -64,15 +64,20 @@
 			}
 		}
 
-		private void OnTick(object obj) {
+		private void OnTick(Object obj) {
 			if (this.IsStart == false) {
 				return;
 			}
 			if (this.liveId == null) {
 				return;
 			}
-
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
 			this.ConnectLiveInfoAsync(this.liveId, xmlDoc => {
+				if (stopwatch.IsRunning) {
+					stopwatch.Stop();
+				}
+				
 				try {
 					var rootNode = xmlDoc.SelectSingleNode(@"/getplayerstatus");
 					if (rootNode.Attributes["status"].Value != "ok") {
@@ -81,7 +86,7 @@
 					};
 
 					if (this.OnSync != null) {
-						var liveInfo = new NicoLiveInfo(xmlDoc);
+						var liveInfo = new NicoLiveInfo(xmlDoc, stopwatch.ElapsedMilliseconds);
 						this.OnSync(liveInfo);
 						Debug.WriteLine("ニコ生サーバと同期しました。");
 					}
@@ -93,7 +98,6 @@
 
 		private void ConnectLiveInfoAsync(String liveId, Action<XmlDocument> method) {
 			using (var webClient = new CookieAwareWebClient(this.cookieContainer)) {
-				Debug.WriteLine(String.Format(@"{0} {1}", liveId, this.cookieContainer.Count));
 				webClient.Encoding = Encoding.UTF8;
 				webClient.QueryString.Add("v", liveId);
 				webClient.OpenReadCompleted += (sender, e) => {
@@ -123,18 +127,27 @@
 		public DateTime BaseTime { get; private set; }
 		public DateTime OpenTime { get; private set; }
 
-		public NicoLiveInfo(XmlDocument xmlDoc) {
-			var rootNode = xmlDoc.SelectSingleNode(@"/getplayerstatus");
-			var startTimeNode = rootNode.SelectSingleNode(@"/getplayerstatus/stream/start_time");
-			var endTimeNode = rootNode.SelectSingleNode(@"/getplayerstatus/stream/end_time");
-			var baseTimeNode = rootNode.SelectSingleNode(@"/getplayerstatus/stream/base_time");
-			var openTimeNode = rootNode.SelectSingleNode(@"/getplayerstatus/stream/open_time");
+		public NicoLiveInfo(XmlDocument xmlDoc, Int64 syncDelay) {
+			try {
+				var rootNode = xmlDoc.SelectSingleNode(@"/getplayerstatus");
+				var startTimeNode = rootNode.SelectSingleNode(@"/getplayerstatus/stream/start_time");
+				var endTimeNode = rootNode.SelectSingleNode(@"/getplayerstatus/stream/end_time");
+				var baseTimeNode = rootNode.SelectSingleNode(@"/getplayerstatus/stream/base_time");
+				var openTimeNode = rootNode.SelectSingleNode(@"/getplayerstatus/stream/open_time");
 
-			this.ServerTime = UnixTime.FromUnixTime(Int64.Parse(rootNode.Attributes["time"].Value));
-			this.StartTime = UnixTime.FromUnixTime(Int64.Parse(startTimeNode.InnerText));
-			this.EndTime = UnixTime.FromUnixTime(Int64.Parse(endTimeNode.InnerText));
-			this.BaseTime = UnixTime.FromUnixTime(Int64.Parse(endTimeNode.InnerText));
-			this.OpenTime = UnixTime.FromUnixTime(Int64.Parse(endTimeNode.InnerText));
+				this.ServerTime = UnixTime.FromUnixTime(Int64.Parse(rootNode.Attributes["time"].Value)).AddSeconds(-1 * (syncDelay / 1000));
+				this.StartTime = UnixTime.FromUnixTime(Int64.Parse(startTimeNode.InnerText));
+				this.EndTime = UnixTime.FromUnixTime(Int64.Parse(endTimeNode.InnerText));
+				this.BaseTime = UnixTime.FromUnixTime(Int64.Parse(baseTimeNode.InnerText));
+				this.OpenTime = UnixTime.FromUnixTime(Int64.Parse(openTimeNode.InnerText));
+
+				Debug.WriteLine(syncDelay);
+				Debug.WriteLine(UnixTime.FromUnixTime(Int64.Parse(rootNode.Attributes["time"].Value)));
+				Debug.WriteLine(this.ServerTime);
+
+			} catch(NullReferenceException e) {
+				throw new ArgumentException("XMLの形式が不正です。", e);
+			}
 		}
 	}
 }
