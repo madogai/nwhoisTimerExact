@@ -4,14 +4,13 @@
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Threading;
-	using Forms = System.Windows.Forms;
 	using nwhois.plugin;
 
 	public sealed class NwhoisTimerExact : IPlugin {
 		private const String FileName = "NwhoisTimerExact.bin";
 		private const String LogFilePath = @"exact.log";
-		private const int RePostInterval = 1000;
-		private const int RePostTimeout = 10000;
+		private const int RetryPostInterval = 1000;
+		private const int RetryPostCount = 10;
 
 		private MainForm form = null;
 		private NwhoisTimerExactData pluginData;
@@ -191,30 +190,21 @@
 
 			Debug.WriteLine(String.Format(@"コマンド: {0}, メッセージ: {1}", command, message));
 			if (this.pluginData.AsOwner && this.Host.IsCaster) {
-				var timer = new Forms.Timer();
-				var stopWatch = new Stopwatch();
-				timer.Interval = RePostInterval;
-				timer.Tick += (arg, e1) => {
-					var elapsed = stopWatch.ElapsedMilliseconds;
-					var isTimeout = elapsed > RePostTimeout;
-					if (isTimeout) {
-						Debug.WriteLine("規定回数内に運営者コメントの投稿に失敗しました。");
-						timer.Stop();
-						timer.Dispose();
-					}
+				for (var i = 0; ; i++) {
 					var doPost = this.Host.PostOwnerMessage(message, command);
 					if (doPost) {
-						timer.Stop();
-						timer.Dispose();
+						Debug.WriteLine("運営者コメントを投稿しました。");
+						break;
 					}
-				};
-				timer.Start();
-				stopWatch.Start();
+					if (i == RetryPostCount) {
+						break;
+					}
+					Thread.Sleep(RetryPostInterval);
+				}
 			} else {
 				this.Host.PostMessage(message, command);
+				Debug.WriteLine("コメントを投稿しました。");
 			}
-
-			Debug.WriteLine("アラートを投稿しました。");
 		}
 	}
 }
