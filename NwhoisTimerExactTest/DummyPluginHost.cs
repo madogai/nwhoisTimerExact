@@ -7,6 +7,7 @@ using nwhois.plugin;
 namespace NwhoisTimerExactTest {
 	internal sealed class DummyPluginHost : IPluginHost {
 		public PostedMessage PostedMessage { get; set; }
+		public bool IsPost { get; set; }
 
 		#region IPluginHost メンバー
 
@@ -118,22 +119,24 @@ namespace NwhoisTimerExactTest {
 			};
 		}
 
+		public Func<bool> GetPostResult { get; set; }
+
+		public bool PostOwnerMessage(string message, string command) {
+			return this.PostOwnerMessage(message, command, null);
+		}
+
 		public bool PostOwnerMessage(string message, string command, string name) {
 			this.PostedMessage = new PostedMessage {
 				IsOwner = true,
 				Command = command,
 				Message = message,
 			};
-			return true;
-		}
 
-		public bool PostOwnerMessage(string message, string command) {
-			this.PostedMessage = new PostedMessage {
-				IsOwner = true,
-				Command = command,
-				Message = message,
-			};
-			return true;
+			var result = GetPostResult != null ? GetPostResult() : true;
+			if (result) {
+				this.IsPost = true;
+			}
+			return result;
 		}
 
 		public event EventHandler<NicoApi.ChatReceiveEventArgs> ReceiveChat;

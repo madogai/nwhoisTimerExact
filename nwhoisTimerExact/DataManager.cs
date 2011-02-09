@@ -41,14 +41,31 @@
 	}
 
 	public class NwhoisTimerExactData {
-		public Decimal CallAlertTime;
-		public Boolean DoComment;
-		public String PostComment;
-		public String PostCommand;
-		public Boolean AsOwner;
-		public String[] CommunityFilter;
-		public Boolean AnytimeWatch;
-		public Boolean EnableAfterExtend;
+		public Decimal callAlertTime;
+		public Decimal CallAlertTime {
+			get {
+				return this.callAlertTime;
+			}
+			set {
+				this.callAlertTime = value;
+				if (this.OnChangeCallAlertTime != null) {
+					this.OnChangeCallAlertTime(value);
+				}
+			}
+		}
+		public Boolean doComment;
+		public Boolean DoComment { get; set; }
+		public String PostComment { get; set; }
+		public String PostCommand { get; set; }
+		public Boolean AsOwner { get; set; }
+		public String[] communityFilter;
+		public String[] CommunityFilter { get; set; }
+		public Boolean AnytimeWatch { get; set; }
+		public Boolean EnableAfterExtend { get; set; }
+
+		public event ChangeTimeEventHandler OnChangeCallAlertTime;
+
+		public delegate void ChangeTimeEventHandler(Decimal param);
 
 		public NwhoisTimerExactData() {
 			this.CallAlertTime = 1;

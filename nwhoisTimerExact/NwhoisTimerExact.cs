@@ -1,20 +1,23 @@
 ﻿namespace nwhois.plugin.NwhoisTimerExact {
 	using System;
 	using System.Diagnostics;
-	using nwhois.plugin;
-	using System.Threading;
+	using System.Collections.Generic;
 	using System.IO;
+	using System.Threading;
+	using Forms = System.Windows.Forms;
+	using nwhois.plugin;
 
 	public sealed class NwhoisTimerExact : IPlugin {
 		private const String FileName = "NwhoisTimerExact.bin";
 		private const String LogFilePath = @"exact.log";
+		private const int RePostInterval = 1000;
+		private const int RePostTimeout = 10000;
 
 		private MainForm form = null;
 		private NwhoisTimerExactData pluginData;
 		private Boolean enableAlert;
 
 		private event EventHandler OnAlertCall;
-		private Action<object> onFormClosed;
 
 		public NwhoisTimerExact() {
 #if DEBUG
@@ -97,8 +100,7 @@
 				alertTimer.Change(Timeout.Infinite, Timeout.Infinite);
 			};
 
-			// TODO 消す
-			this.onFormClosed = obj => {
+			this.pluginData.OnChangeCallAlertTime += param => {
 				nicoLiveTimer.ResetSync();
 			};
 
@@ -139,10 +141,6 @@
 			form.FormClosed += (sender, e) => {
 				DataManager.Save(this.Host.ApplicationDataFolder, NwhoisTimerExact.FileName, this.pluginData);
 				this.form = null;
-				// ここでデリゲートは分かりづらくなるので、できればしたくなかったのですが、他の綺麗な手段が思いつきませんでした。
-				if (this.onFormClosed != null) {
-					this.onFormClosed(null);
-				}
 			};
 			form.WatchStateChangeCheckBox.CheckedChanged += (sender, e) => {
 				this.enableAlert = form.WatchStateChangeCheckBox.Checked;
@@ -191,15 +189,30 @@
 			var message = this.pluginData.PostComment;
 			var command = this.pluginData.PostCommand;
 
-#if DEBUG
 			Debug.WriteLine(String.Format(@"コマンド: {0}, メッセージ: {1}", command, message));
-#else
 			if (this.pluginData.AsOwner && this.Host.IsCaster) {
-				this.Host.PostOwnerMessage(message, command);
+				var timer = new Forms.Timer();
+				var stopWatch = new Stopwatch();
+				timer.Interval = RePostInterval;
+				timer.Tick += (arg, e1) => {
+					var elapsed = stopWatch.ElapsedMilliseconds;
+					var isTimeout = elapsed > RePostTimeout;
+					if (isTimeout) {
+						Debug.WriteLine("規定回数内に運営者コメントの投稿に失敗しました。");
+						timer.Stop();
+						timer.Dispose();
+					}
+					var doPost = this.Host.PostOwnerMessage(message, command);
+					if (doPost) {
+						timer.Stop();
+						timer.Dispose();
+					}
+				};
+				timer.Start();
+				stopWatch.Start();
 			} else {
 				this.Host.PostMessage(message, command);
 			}
-#endif
 
 			Debug.WriteLine("アラートを投稿しました。");
 		}

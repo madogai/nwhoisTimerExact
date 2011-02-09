@@ -3,12 +3,13 @@
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 	using System;
 	using nwhois.plugin;
+	using System.Threading;
 
 	/// <summary>
 	///NwhoisTimerExactTest のテスト クラスです。すべての
 	///NwhoisTimerExactTest 単体テストをここに含めます
 	///</summary>
-	[TestClass()]
+	[TestClass]
 	public class NwhoisTimerExactTest {
 
 		[TestMethod()]
@@ -50,7 +51,7 @@
 		}
 
 
-		[TestMethod()]
+		[TestMethod]
 		[DeploymentItem("nwhoisTimerExact.dll")]
 		public void OnAlertSuccessNormalPost() {
 			// Arrange
@@ -70,7 +71,7 @@
 			}, postedMessage);
 		}
 
-		[TestMethod()]
+		[TestMethod]
 		[DeploymentItem("nwhoisTimerExact.dll")]
 		public void OnAlertSuccessPostOwner() {
 			// Arrange
@@ -93,6 +94,28 @@
 				Command = "command",
 				Message = "comment",
 			}, postedMessage);
+		}
+
+		[TestMethod]
+		[DeploymentItem("nwhoisTimerExact.dll")]
+		public void OnAlertTimeout() {
+			// Arrange
+			var target = CreateTestInstance();
+			target.pluginData.AsOwner = true;
+			target.pluginData.PostCommand = "command";
+			target.pluginData.PostComment = "comment";
+			target.Host = new DummyPluginHost {
+				CanPostMessage = true,
+				IsCaster = true,
+				GetPostResult = () => false,
+			};
+
+			// Act
+			target.OnAlert(this, EventArgs.Empty);
+			var postedMessage = ((DummyPluginHost)target.Host).PostedMessage;
+
+			// Assert
+			Assert.IsNull(postedMessage);
 		}
 
 		private NwhoisTimerExact_Accessor CreateTestInstance() {
