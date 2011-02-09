@@ -4,6 +4,7 @@
 	using System;
 	using nwhois.plugin;
 	using System.Threading;
+	using System.Diagnostics;
 
 	/// <summary>
 	///NwhoisTimerExactTest のテスト クラスです。すべての
@@ -96,7 +97,7 @@
 			}, postedMessage);
 		}
 
-		[TestMethod]
+		[TestMethod(), Timeout(11000)]
 		[DeploymentItem("nwhoisTimerExact.dll")]
 		public void OnAlertTimeout() {
 			// Arrange
@@ -109,13 +110,15 @@
 				IsCaster = true,
 				GetPostResult = () => false,
 			};
+			var stopWatch = new Stopwatch();
 
 			// Act
+			stopWatch.Start();
 			target.OnAlert(this, EventArgs.Empty);
 			var postedMessage = ((DummyPluginHost)target.Host).PostedMessage;
-
+			stopWatch.Stop();
 			// Assert
-			Assert.IsNull(postedMessage);
+			Assert.IsTrue(stopWatch.ElapsedMilliseconds > 10000);
 		}
 
 		private NwhoisTimerExact_Accessor CreateTestInstance() {

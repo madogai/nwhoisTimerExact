@@ -12,7 +12,7 @@ namespace NwhoisTimerExactTest {
 		#region IPluginHost メンバー
 
 		public string ApplicationDataFolder {
-			get { throw new NotImplementedException(); }
+			get { return ""; }
 		}
 
 		public bool CanPostMessage { get; set; }
@@ -20,81 +20,81 @@ namespace NwhoisTimerExactTest {
 		public event EventHandler ChangeNGFilter;
 
 		public NicoApi.Chat[] Chats {
-			get { throw new NotImplementedException(); }
+			get { return null; }
 		}
 
 		public int Comment {
-			get { throw new NotImplementedException(); }
+			get { return 0; }
 		}
 
 		public string CommunityId { get; set; }
 
 		public string CommunityName {
-			get { throw new NotImplementedException(); }
+			get { return null; }
 		}
 
 		public bool ConnectLive(string liveId, bool withBrowser) {
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public bool ConnectLive(string liveId) {
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public System.Net.CookieContainer CookieContainer {
-			get { throw new NotImplementedException(); }
+			get { return null; }
 		}
 
 		public int CurrentUser {
-			get { throw new NotImplementedException(); }
+			get { return 0; }
 		}
 
 		public void Disconnect() {
-			throw new NotImplementedException();
+
 		}
 
 		public event EventHandler Disposed;
 
 		public Filteringtype FilterState {
-			get { throw new NotImplementedException(); }
+			get { return Filteringtype.Id; }
 		}
 
 		public NicoApi.Chat[] GetChatLog(string liveId) {
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public ILiveLogInfo[] GetLiveLog() {
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public NicoApi.NgClient[] GetNgClients() {
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public NicoApi.Chat GetSelectedChat() {
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public event EventHandler Initialized;
 
 		public bool IsArchive {
-			get { throw new NotImplementedException(); }
+			get { return false; }
 		}
 
 		public bool IsCaster { get; set;  }
 
 		public bool IsConnected {
-			get { throw new NotImplementedException(); }
+			get { return false; }
 		}
 
 		public bool IsPremium {
-			get { throw new NotImplementedException(); }
+			get { return true; }
 		}
 
 		public string LiveId { get; set; }
 
 		public string LiveName {
-			get { throw new NotImplementedException(); }
+			get { return null; }
 		}
 
 		public event EventHandler LiveStart;
@@ -119,7 +119,7 @@ namespace NwhoisTimerExactTest {
 			};
 		}
 
-		public Func<bool> GetPostResult { get; set; }
+		public Func<bool> GetPostResult;
 
 		public bool PostOwnerMessage(string message, string command) {
 			return this.PostOwnerMessage(message, command, null);
@@ -144,41 +144,40 @@ namespace NwhoisTimerExactTest {
 		public event EventHandler<NicoApi.ChatResultReceiveEventArgs> ReceiveChatResult;
 
 		public bool Relogin() {
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public bool SelectChat(int no) {
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public string SendNGCommand(NicoApi.NgClient.MODE mode, string source, NicoApi.NgClient.TYPE type) {
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public DateTime ServerStartTime {
-			get { throw new NotImplementedException(); }
+			get { return DateTime.Now; }
 		}
 
 		public void ShowStatusMessage(string message, bool isErrorMessage) {
-			throw new NotImplementedException();
 		}
 
 		public DateTime StartTime {
-			get { throw new NotImplementedException(); }
+			get { return DateTime.Now; }
 		}
 
 		public int TotalUser {
-			get { throw new NotImplementedException(); }
+			get { return 0; }
 		}
 
 		public event EventHandler UpdatedCommunityInfo;
 
 		public string UserId {
-			get { throw new NotImplementedException(); }
+			get { return null; }
 		}
 
 		public object Win32WindowOwner {
-			get { throw new NotImplementedException(); }
+			get { return null; }
 		}
 
 		#endregion
