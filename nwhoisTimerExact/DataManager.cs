@@ -35,11 +35,11 @@
 				}
 			} catch (InvalidOperationException) {
 				MessageBox.Show("ファイルの保存に失敗しました。");
-				throw;
 			}
 		}
 	}
 
+	[Serializable]
 	public class NwhoisTimerExactData {
 		public Decimal callAlertTime;
 		public Decimal CallAlertTime {

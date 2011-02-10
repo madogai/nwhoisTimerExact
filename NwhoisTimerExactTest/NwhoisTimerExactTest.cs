@@ -51,7 +51,6 @@
 			}, postedMessage);
 		}
 
-
 		[TestMethod]
 		[DeploymentItem("nwhoisTimerExact.dll")]
 		public void OnAlertSuccessNormalPost() {

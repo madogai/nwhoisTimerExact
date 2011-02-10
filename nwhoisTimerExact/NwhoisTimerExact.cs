@@ -33,7 +33,10 @@
 			var loaded = false;
 			Timer timer = null;
 			timer = new System.Threading.Timer(obj => {
-				if (loaded == false) {
+				Debug.WriteLine(this.Host == null);
+				Debug.WriteLine(String.Format("loaded: {0}", loaded));
+				if (loaded == false && this.Host != null) {
+					Debug.WriteLine("IHostが見つかりました。");
 					loaded = true;
 					this.Initialize();
 					if (timer != null) {
