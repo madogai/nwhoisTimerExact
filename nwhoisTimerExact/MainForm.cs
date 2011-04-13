@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Text;
 
 namespace nwhois.plugin.NwhoisTimerExact {
 	public partial class MainForm : Form {
@@ -14,9 +15,12 @@ namespace nwhois.plugin.NwhoisTimerExact {
 			this.PostCommentTextBox.Text = pluginData.PostComment;
 			this.PostCommandTextBox.Text = pluginData.PostCommand;
 			this.AsOwnerCheckBox.Checked = pluginData.AsOwner;
-			this.CommunityFilterTextBox.Text = String.Join(@"/", pluginData.CommunityFilter);
+			var communityFilters = new string[pluginData.CommunityFilter.Count];
+			for (var i = 0; i < pluginData.CommunityFilter.Count; i++) {
+				communityFilters[i] = pluginData.CommunityFilter[i];
+			}
+			this.CommunityFilterTextBox.Text = String.Join(@"/", communityFilters);
 			this.AnytimeWatchCheckBox.Checked = pluginData.AnytimeWatch;
-			this.EnableAfterExtendCheckBox.Checked = pluginData.EnableAfterExtend;
 		}
 
 		private void CallAlertSpinner_ValueChanged(object sender, EventArgs e) {
@@ -49,10 +53,6 @@ namespace nwhois.plugin.NwhoisTimerExact {
 				this.WatchStateChangeCheckBox.Checked = true;
 			}
 			this.pluginData.AnytimeWatch = this.AnytimeWatchCheckBox.Checked;
-		}
-
-		private void EnableAfterExtendCheckBox_CheckedChanged(object sender, EventArgs e) {
-			this.pluginData.EnableAfterExtend = this.EnableAfterExtendCheckBox.Checked;
 		}
 
 		private void WatchStateChangeCheckBox_CheckedChanged(object sender, EventArgs e) {

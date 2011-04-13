@@ -37,7 +37,6 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.AddCurrentCommunityButton = new System.Windows.Forms.Button();
 			this.AnytimeWatchCheckBox = new System.Windows.Forms.CheckBox();
-			this.EnableAfterExtendCheckBox = new System.Windows.Forms.CheckBox();
 			this.StatusBar = new System.Windows.Forms.StatusStrip();
 			this.StatusContent = new System.Windows.Forms.ToolStripStatusLabel();
 			this.CallAlertSpinner = new System.Windows.Forms.NumericUpDown();
@@ -172,24 +171,13 @@
 			// AnytimeWatchCheckBox
 			// 
 			this.AnytimeWatchCheckBox.AutoSize = true;
-			this.AnytimeWatchCheckBox.Location = new System.Drawing.Point(125, 187);
+			this.AnytimeWatchCheckBox.Location = new System.Drawing.Point(224, 187);
 			this.AnytimeWatchCheckBox.Name = "AnytimeWatchCheckBox";
 			this.AnytimeWatchCheckBox.Size = new System.Drawing.Size(69, 16);
 			this.AnytimeWatchCheckBox.TabIndex = 8;
 			this.AnytimeWatchCheckBox.Text = "常に監視";
 			this.AnytimeWatchCheckBox.UseVisualStyleBackColor = true;
 			this.AnytimeWatchCheckBox.CheckedChanged += new System.EventHandler(this.AnytimeWatchCheckBox_CheckedChanged);
-			// 
-			// EnableAfterExtendCheckBox
-			// 
-			this.EnableAfterExtendCheckBox.AutoSize = true;
-			this.EnableAfterExtendCheckBox.Location = new System.Drawing.Point(200, 187);
-			this.EnableAfterExtendCheckBox.Name = "EnableAfterExtendCheckBox";
-			this.EnableAfterExtendCheckBox.Size = new System.Drawing.Size(93, 16);
-			this.EnableAfterExtendCheckBox.TabIndex = 9;
-			this.EnableAfterExtendCheckBox.Text = "延長後も適用";
-			this.EnableAfterExtendCheckBox.UseVisualStyleBackColor = true;
-			this.EnableAfterExtendCheckBox.CheckedChanged += new System.EventHandler(this.EnableAfterExtendCheckBox_CheckedChanged);
 			// 
 			// StatusBar
 			// 
@@ -250,7 +238,6 @@
 			this.Controls.Add(this.WatchStateChangeCheckBox);
 			this.Controls.Add(this.StatusBar);
 			this.Controls.Add(this.CallAlertSpinner);
-			this.Controls.Add(this.EnableAfterExtendCheckBox);
 			this.Controls.Add(this.AnytimeWatchCheckBox);
 			this.Controls.Add(this.AddCurrentCommunityButton);
 			this.Controls.Add(this.label6);
@@ -291,7 +278,6 @@
 		internal System.Windows.Forms.TextBox PostCommentTextBox;
 		internal System.Windows.Forms.TextBox PostCommandTextBox;
 		internal System.Windows.Forms.TextBox CommunityFilterTextBox;
-		internal System.Windows.Forms.CheckBox EnableAfterExtendCheckBox;
 		internal System.Windows.Forms.CheckBox AnytimeWatchCheckBox;
 		internal System.Windows.Forms.Button AddCurrentCommunityButton;
 		internal System.Windows.Forms.CheckBox DoCommentCheckBox;

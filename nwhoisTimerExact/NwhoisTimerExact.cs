@@ -181,8 +181,8 @@
 				return;
 			}
 
-			var enableCommunityFilter = this.pluginData.CommunityFilter.Length > 0;
-			var hasCommynity = Array.Exists(this.pluginData.CommunityFilter, commynityId => this.Host.CommunityId == commynityId);
+			var enableCommunityFilter = this.pluginData.CommunityFilter.Count > 0;
+			var hasCommynity = this.pluginData.CommunityFilter.Contains(this.Host.CommunityId);
 			if (enableCommunityFilter && hasCommynity == false) {
 				Debug.WriteLine("コミュニティーフィルターに一致しないため、コメントは送信されません。");
 				return;
