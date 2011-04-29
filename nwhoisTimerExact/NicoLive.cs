@@ -109,8 +109,6 @@
 						method(xmlDoc);
 					};
 					webClient.OpenReadAsync(new Uri(NicoLivePlayerInfoUri));
-				} catch (SocketException e) {
-					Debug.Write(e.Message);
 				} catch (WebException e) {
 					Debug.Write(e.Message);
 				}
