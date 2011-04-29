@@ -45,4 +45,5 @@ Advertisement
 
 Version
 ---
-2011/04/31 上手くセーブできない人がいたため、データの保存方法をXMLSerializerからXmlDocumentに変更しました。
+2011/04/29 非同期時のエラー処理に対応しました。
+2011/03/31 上手くセーブできない人がいたため、データの保存方法をXMLSerializerからXmlDocumentに変更しました。
