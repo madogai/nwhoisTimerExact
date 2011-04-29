@@ -43,3 +43,6 @@ Advertisement
 *ToNaMeT*  
 <http://www.tonamet.com>
 
+Version
+---
+2011/04/31 上手くセーブできない人がいたため、データの保存方法をXMLSerializerからXmlDocumentに変更しました。

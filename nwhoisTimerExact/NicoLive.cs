@@ -6,6 +6,7 @@
 	using System.Diagnostics;
 	using System.Xml.XPath;
 	using System.Xml;
+	using System.Net.Sockets;
 
 	internal sealed class NicoLiveInfoIntervalTimer : IDisposable {
 		private const String NicoLivePlayerInfoUri = @"http://live.nicovideo.jp/api/getplayerstatus";
@@ -73,11 +74,12 @@
 			}
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
+
 			this.ConnectLiveInfoAsync(this.liveId, xmlDoc => {
 				if (stopwatch.IsRunning) {
 					stopwatch.Stop();
 				}
-				
+
 				try {
 					var rootNode = xmlDoc.SelectSingleNode(@"/getplayerstatus");
 					if (rootNode.Attributes["status"].Value != "ok") {
@@ -98,14 +100,20 @@
 
 		private void ConnectLiveInfoAsync(String liveId, Action<XmlDocument> method) {
 			using (var webClient = new CookieAwareWebClient(this.cookieContainer)) {
-				webClient.Encoding = Encoding.UTF8;
-				webClient.QueryString.Add("v", liveId);
-				webClient.OpenReadCompleted += (sender, e) => {
-					var xmlDoc = new XmlDocument();
-					xmlDoc.Load(e.Result);
-					method(xmlDoc);
-				};
-				webClient.OpenReadAsync(new Uri(NicoLivePlayerInfoUri));
+				try {
+					webClient.Encoding = Encoding.UTF8;
+					webClient.QueryString.Add("v", liveId);
+					webClient.OpenReadCompleted += (sender, e) => {
+						var xmlDoc = new XmlDocument();
+						xmlDoc.Load(e.Result);
+						method(xmlDoc);
+					};
+					webClient.OpenReadAsync(new Uri(NicoLivePlayerInfoUri));
+				} catch (SocketException e) {
+					Debug.Write(e.Message);
+				} catch (WebException e) {
+					Debug.Write(e.Message);
+				}
 			}
 		}
 
@@ -145,7 +153,7 @@
 				Debug.WriteLine(UnixTime.FromUnixTime(Int64.Parse(rootNode.Attributes["time"].Value)));
 				Debug.WriteLine(this.ServerTime);
 
-			} catch(NullReferenceException e) {
+			} catch (NullReferenceException e) {
 				throw new ArgumentException("XMLの形式が不正です。", e);
 			}
 		}
